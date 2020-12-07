@@ -23,7 +23,7 @@ const app = http.createServer((req, res) => {
             + '<h1>Code Test read and write </h1>'
             + '<form method="post" action="write" enctype="application/x-www-form-urlencoded"><fieldset>'
             + '<div><label for="content">File content:</label><textarea name="content" id="content" rows="4" cols="50" placeholder="write the content of your file here"> </textarea> </div>'
-            + '<div><input id="ListCommits" type="submit" value="List Commits" /></div></fieldset></form></body></html>'
+            + '<div><input id="submit" type="submit" value="Submit" /></div></fieldset></form></body></html>'
 
         res.end(form)
     }
@@ -62,10 +62,31 @@ const app = http.createServer((req, res) => {
             });
             res.end('<html><body>'
                 + '<h1> Thank you, file successfully created</h1>'
+                + '<h1><a href = "/read"> Read File</a> </h1> <br>'
+                + '<h1><a href = "/open"> open File</a> </h1> <br>'
+
                 + '</html><body>'
             );
 
         }
+    } else if (req.url === '/open') {
+        fs.open("myfile.txt", 'r', (err, file) => {
+            if (err) {
+                console.log(err)
+                res.end('<html><body>'
+                    + '<h1> An error occured while trying to open the file</h1>'
+                    + '</html><body>')
+            }
+            console.log("file openedd")
+            const buff = Buffer.alloc(1024);
+            fs.read(file, buff, 0, buff.length, 0, (err, bytes) => {
+                if (err) throw err;
+                if (bytes > 0) {
+                    res.write(buff.slice(0, bytes).toString())
+                    res.end();
+                }
+            })
+        })
     }
     else {
         res.writeHead(404, { "Content-Type": "text/plain" });
