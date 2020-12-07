@@ -5,11 +5,14 @@ const port = process.env.PORT || 3000;
 
 const app = http.createServer((req, res) => {
     if (req.url === "/") {
+        console.log(req.protocol)
+        console.log(req.connection.encrypted);
+        const domain = req.headers.host
         res.writeHead(200, { "Content-Type": "text/html" });
         res.write('<html><body>'
             + '<h1>Code Test read and write </h1>'
-            + '<h1><a href = "http://localhost:3000/read"> Read</a> </h1> <br>'
-            + '<h1> <a href = "http://localhost:3000/writecontent"> Write</a> </h1>'
+            + '<h1><a href = "/read"> Read</a> </h1> <br>'
+            + '<h1> <a href = "/writecontent"> Write</a> </h1>'
             + '</body></html>'
         );
         res.end();
